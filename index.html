@@ -2,24 +2,64 @@
     <head>
         <script src="pdf.js"></script>
     </head>
+    <style>
+    #result{
+        position:absolute;
+        bottom:0%;
+        left:0%;
+        width:48%;
+        border-style:solid;
+        height:95%;
+    }
+    #result2{
+        position:absolute;
+        left:51%;
+        bottom:0%;
+        width:48%;
+        border-style:solid;
+        height:95%;
+    }
+    
+    </style>
     <body>
         <input id="pdffile" name="pdffile" type="file" />
         <button id="btn" onclick="convert()">Process</button>
-        <div id="result"></div>
+        <button onclick="splitby(',')">Separate from comas</button>
+        <textarea id="result"></textarea><textarea id="result2"></textarea>
     </body>
 </html>
 
 <script>
 
+function splitby(by){
+    by=prompt("split by?")
+    var a=result.value;
+    var b=""
+ var all=a.split(",");
+
+ for(var i=0;i<all.length;i++){
+     if(all[i].toUpperCase().indexOf(by.toUpperCase())>-1){
+         b+="\n"+all[i]+"\n\n"
+     }
+     result2.value=b;
+
+
+ }
+
+
+}
     function convert() {//https://npmcdn.com/pdfjs-dist/build/pdf.js
         var fr=new FileReader();
         var pdff = new Pdf2TextClass();
         fr.onload=function(){
-            pdff.pdfToText(fr.result, null, (text) => { document.getElementById('result').innerText += text; });
+            pdff.pdfToText(fr.result, null, (text) => { document.getElementById('result').value = text; splitby()});
         }
         fr.readAsDataURL(document.getElementById('pdffile').files[0])
-        
+       
+       // fr.readAsDataURL("file:///C:/Users/ljaur/OneDrive/Desktop/stat/Statements-2.pdf")
     }
+
+
 
     function Pdf2TextClass() {
         var self = this;
