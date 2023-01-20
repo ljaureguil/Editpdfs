@@ -8,11 +8,11 @@
     <style>
     #result{
         position:absolute;
+        left:1%;
         bottom:0%;
-        left:0%;
-        width:48%;
+        width:98%;
         border-style:solid;
-        height:95%;
+        height:85%;
 display:none;
 
     }
@@ -22,22 +22,34 @@ display:none;
         bottom:0%;
         width:98%;
         border-style:solid;
-        height:95%;
+        height:85%;
     }
     
     </style>
     <body>
-        <input id="pdffile" name="pdffile" type="file" />
-        <button id="btn" onclick="convert()">Process</button>
-        <button onclick="splitby(',')">Separate from comas</button>
-        <textarea id="result"></textarea><textarea id="result2"></textarea>
+        <input id="pdffile" name="pdffile" type="file" oninput="convert()"/><button id="sh" onclick="showo()">Show</button><br>
+        <input id="sep" oninput="splitby(this.value)"/>
+        
+        <textarea id="result2"></textarea><textarea id="result"></textarea>
     </body>
 </html>
 
 <script>
+    result.style.display="none";
+function showo(){
+    if(result.style.display==="none"){
+        result.style.display="block";
+        sh.innerHTML="Hide"
+    }
+    else{
+        result.style.display="none";
+        sh.innerHTML="Show"
+    }
 
+}
 function splitby(by){
-    by=prompt("split by?")
+   // alert(by);
+   // by=prompt("split by?");
     var a=result.value;
     var b=""
  var all=a.split(",");
