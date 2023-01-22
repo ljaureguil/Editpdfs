@@ -42,20 +42,27 @@ display:none;
     button{
         margin: 5px;
     }
+    #pd{
+        position:absolute;
+
+    }
     
     </style>
     <body>
         <div style="overflow:auto">
-        <input id="pdffile" name="pdffile" type="file" multiple="multiple" oninput="convert2()"/>
+        <input id="pdffile" name="pdffile" type="file" multiple="multiple" oninput="convert3()"/>
+        
         <button id="sh" onclick="showo()">Show</button><button id="sh" onclick="showr()">rule</button><br>
     
         <input id="sep" oninput="splitby(this.value)"/>
         
-        <textarea id="result2"></textarea><textarea id="result"></textarea><button onclick="printZpl(result2.value);">Print</button>
+        <textarea id="result2"></textarea><textarea id="result"></textarea>
+        <button onclick="printZpl(result2.value);">Print</button>
     </div>
         <div id="drule" style="display:none">
             <textarea id="rule"></textarea><button id="sh" onclick="procesar(rule.value)">proccess</button>
         </div>
+        
     </body>
 </html>
 
@@ -96,16 +103,48 @@ function splitby(by){
     var a=result.value;
     var b=""
  var all=a.split(",");
-
+ //var all=a.split(by);
  for(var i=0;i<all.length;i++){
+       if(all[i].length<30){var w=all[i-1];all[i]=w+""+all[i];all[i-1]="none"}
+
+ }
+ for(var i=0;i<all.length;i++){
+     try{
+   //  if(all[i].length<16){var w=all[i-1];all[i]=w+""+all[i];all[i-1]="none"}
      if(all[i].toUpperCase().indexOf(by.toUpperCase())>-1){
-         b+="\n"+all[i]+"\n\n"
+         b+="\n"+all[i]+"\n\n";
      }
      result2.value=b;
+     }
+     catch(e){alert(e)}
 
 
  }
 
+
+}
+function convert3(){
+
+   var fr=new FileReader();
+      //  var pdff = new Pdf2TextClass();
+       
+        fr.onload=function(){
+          result.value+="**Document: \n\n"+ fr.result;// splitby();
+       //   alert(result.value)
+       //     pdff.pdfToText(fr.result, null, (text) => {result.value +="**Document: "+i+"\n\n"+ text; splitby()});// document.getElementById('result')
+      
+        }
+  
+         fr.readAsText(document.getElementById('pdffile').files[0])//
+
+/*
+   result.value ="";
+         docs=pdffile.files, tall="";
+       for(var i=0;i<docs.length;i++){
+         gettxt(i+1);
+     
+      
+     }  */
 
 }
 function convert2(){
@@ -113,10 +152,27 @@ function convert2(){
     result.value ="";
          docs=pdffile.files, tall="";
        for(var i=0;i<docs.length;i++){
-        
-       convert(i+1);
+          convert(i+1);
+      
       
      }  
+
+}
+function gettxt(i){
+        var fr=new FileReader();
+      //  var pdff = new Pdf2TextClass();
+       
+        fr.onload=function(){
+          result.value!="**Document: "+i+"\n\n"+ fr.result; splitby();
+          alert(result.value)
+       //     pdff.pdfToText(fr.result, null, (text) => {result.value +="**Document: "+i+"\n\n"+ text; splitby()});// document.getElementById('result')
+      
+        }
+  
+         fr.readAsDataURL(document.getElementById('pdffile').files[0])//
+       
+       // fr.readAsDataURL("file:///C:/Users/ljaur/OneDrive/Desktop/stat/Statements-2.pdf")
+
 
 }
     function convert(i) {//https://npmcdn.com/pdfjs-dist/build/pdf.js
