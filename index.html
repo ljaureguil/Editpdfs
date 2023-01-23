@@ -50,7 +50,9 @@ display:none;
     </style>
     <body>
         <div style="overflow:auto">
-        <input id="pdffile" name="pdffile" type="file" multiple="multiple" oninput="convert3()"/>
+
+ PDF  <input id="pdffile" name="pdffile" type="file" multiple="multiple" oninput="convert2()"/>
+      TXT <input id="txtfile" name="pdffile" type="file" multiple="multiple" oninput="convert3()"/>
         
         <button id="sh" onclick="showo()">Show</button><button id="sh" onclick="showr()">rule</button><br>
     
@@ -61,13 +63,61 @@ display:none;
     </div>
         <div id="drule" style="display:none">
             <textarea id="rule"></textarea><button id="sh" onclick="procesar(rule.value)">proccess</button>
+            <button onclick="saverule()">Save Rule</button>
+            <select id="srules" onChange="selrule(this.value)"> </select>
+            <button onclick="selrule(srules.value)">Go</button>
+            <button onclick="drule.style.display='none'">Close</button>
+
         </div>
         
     </body>
 </html>
 
 <script>
- var ii=0;
+
+var ii=0, reglas=[];
+var linkr="https://jsonblob.com/api/1066900423386087424";
+var objr={};
+GetJ(linkr,function(r){
+    objr=r;
+    var reglas=r.rules;
+      var op="";
+     for(var i=0;i<reglas.length;i++){
+         var t=reglas[i].split("\n")[0].split("//")[1];
+         op+="<option>"+t+"</option>";
+        }
+        srules.innerHTML=op;
+        
+})
+
+ 
+function saverule(){
+    var p=rule.value.split("\n")[0]
+   
+  if(p.indexOf("//")===0){
+    
+ objr.rules.push(rule.value);
+ UpdateJ(linkr,objr,function(){
+ var t=p.split("//")[1];
+   var op="<option>"+t+"</option>";
+   srules.innerHTML+=op;
+
+ })
+
+  }
+  else alert("Place a titlle at the firstline:  //Title")
+
+}
+
+
+ function selrule(r){
+     var reglas=objr.rules
+         for(var i=0;i<reglas.length;i++){
+             if(reglas[i].indexOf("//"+r+"\n")>-1){ rule.value=reglas[i];return;}
+
+         }
+ }
+ 
     function procesar(v){
         eval(v);
         drule.style.display="none"
@@ -98,6 +148,7 @@ function showo(){
     }
 
 }
+
 function splitby(by){
    if(by===undefined)by="";
     var a=result.value;
@@ -126,26 +177,13 @@ function splitby(by){
 function convert3(){
 
    var fr=new FileReader();
-      //  var pdff = new Pdf2TextClass();
-       
+     
         fr.onload=function(){
           result.value+="**Document: \n\n"+ fr.result;// splitby();
-       //   alert(result.value)
-       //     pdff.pdfToText(fr.result, null, (text) => {result.value +="**Document: "+i+"\n\n"+ text; splitby()});// document.getElementById('result')
-      
+       
         }
   
-         fr.readAsText(document.getElementById('pdffile').files[0])//
-
-/*
-   result.value ="";
-         docs=pdffile.files, tall="";
-       for(var i=0;i<docs.length;i++){
-         gettxt(i+1);
-     
-      
-     }  */
-
+         fr.readAsText(txtfile.files[0])//
 }
 function convert2(){
   
@@ -246,5 +284,49 @@ function gettxt(i){
             });
         }; // end of pdfToText()
     }; // end of class
+
+
+    
+        function GetJ(url, callback) {
+
+            //var url  = "http://localhost:8080/api/v1/users";
+            var xhr = new XMLHttpRequest()
+            xhr.open('GET', url + '/1', true)
+            xhr.onload = function() {
+                //         (xhr.responseText)
+                var users = JSON.parse(xhr.responseText);
+                //     var obb=decoding(users.prim);
+
+                if (xhr.readyState == 4 && xhr.status == "200") {
+                    callback(users);
+                } else {
+                    console.error(users);
+                }
+            }
+            xhr.send(null);
+        }
+
+         // Update a user
+        function UpdateJ(url, ob, callback) {
+
+            json = JSON.stringify(ob);
+            var xhr = new XMLHttpRequest();
+            xhr.open("PUT", url + '/12', true);
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.onload = function() {
+                var users = JSON.parse(xhr.responseText);
+                if (xhr.readyState == 4 && xhr.status == "200") {
+                    //  alert("Tu Forma ha sido Enviada");
+                    if (callback != undefined) callback(users);
+                } else {
+                    (users);
+                }
+            }
+            xhr.send(json);
+        }
+
+
+
+
 
 </script>
